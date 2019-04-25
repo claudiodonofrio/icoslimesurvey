@@ -32,49 +32,27 @@ class IcosLimer:
     def set_headers(self, headers):
         """ URL header options, by default json rpc """
         self.headers = headers
-        
-    # -------------------------------------------------
-    
-    def set_session_key(self):
-        """
-            Create a session key. 
-        """
-        payload = {
-                'method': 'get_session_key',
-                'params': [self.usr, self.pwd],
-                'id': 1,
-                }
-        # get a session key
-        try:
-            r = requests.post(self.url, json=payload, headers=self.headers).json()
-            self.session_key = r['result']
-        except:
-            ex = sys.exc_info()[0]
-            print ( "Exception: %s" % ex)
-            
-        return
-            
+
     # -------------------------------------------------
         
-    def call_rpc(self,method, params,setid=False):
+    def call_rpc(self,method, params,setid=True):
         """
           Generic call to run a lime rpc call.
           At this moment we assume that a session key
           is stored for this instance.
           
-          Args:
-                method (str): The name of the RPC's method
-                params (list): a list of parameters that is required by the method
-
-            Returns:
-                list: The result of the activation
+          @param method (str): The name of the RPC's method
+          @param params [list]: an array of parameters
+              that is required by the method
+          @param setid (bool): default False. If set to 
+              True, rpc call will include the session id                
+          @return raw response from "requests" module                
         """
+        
         if setid:
             payload = {"method":method,"params":params, 'id':self.id}
         else:
             payload = {"method":method,"params":params}
-            
-        #print(payload)
         
         try:
            r = requests.post(url=self.url,
@@ -86,17 +64,40 @@ class IcosLimer:
            print ( "Exception: %s" % ex)
            return
 
+    # -------------------------------------------------
+    
+    def set_session_key(self):
+        """
+            Create a session key.             
+        """
+        method = 'get_session_key'
+        params = [self.usr, self.pwd]
+
+        # get a session key
+        try:
+            r = self.call_rpc(method, params).json()
+            self.session_key = r['result']
+        except:
+            ex = sys.exc_info()[0]
+            print ( "Exception: %s" % ex)            
+        return
 
     # -------------------------------------------------
     
     def release_session_key(self):
-        """ Closes the RPC session """
-        
-        if self.session_key:            
+        """ 
+            Close the RPC session
 
-            payload = {"method":"release_session_key","params":self.session_key}
-            
-            r = requests.post(url=self.url, headers=self.headers, json=payload)
+            Using this function you can close a previously opened session.
+            @access public
+            @param string $sSessionKey the session key
+            @return string OK
+        """
+        
+        if self.session_key:
+            method = 'release_session_key'
+            params = self.session_key
+            r = self.call_rpc(method, params, False)
             if not r.ok:
                 print('session key release failed: ' + r.text)
             
@@ -106,25 +107,77 @@ class IcosLimer:
     # -------------------------------------------------    
     
     def list_surveys(self):
-        """ get a list of all the surveys """
+        """
+            List the survey belonging to a user
+
+            If user is admin he can get surveys of every user
+                (parameter sUser) or all surveys (sUser=null)
+            Else only the surveys belonging to the user requesting will be shown.
+            Returns array with
+             * `sid` the ids of survey
+             * `surveyls_title` the title of the survey
+             * `startdate` start date
+             * `expires` expiration date
+             * `active` if survey is active (Y) or not (!Y)
+            
+             @access public
+             @param string $sSessionKey Auth credentials
+             @param string|null $sUsername (optional) username
+                 to get list of surveys
+             @return array In case of success the list of surveys
+        """
         
         method = 'list_surveys'
-        params = [self.session_key, self.usr, self.pwd]
-        
-        return self.call_rpc(method, params, True).json()
+        params = [self.session_key]
+        return self.call_rpc(method, params).json()
 
     # -------------------------------------------------
     
-    def get_statistics(self, sid, output='html'):
-        """ get a list of all the surveys """
+    def get_statistics(self, sid, output='html', lang='', graph='0'):
+        """            
+            Export statistics of a survey to a user.           
+            Allow to export statistics available Returns string - 
+            base64 encoding of the statistics.
+            
+            @access public
+            @param string $sSessionKey Auth credentials
+            @param int $iSurveyID ID of the Survey
+            @param string $docType (optional) Type of documents the exported
+                statistics should be (pdf|xls|html)
+            @param string $sLanguage (optional) language of the survey to use
+            @param string $graph (optional) Create graph option (default : no)
+            @param int|array $groupIDs (optional)
+                array or integer containing the groups we choose
+                to generate statistics from
+            @return string|array in case of success :
+                Base64 encoded string with the statistics file
+     """
         
         method = 'export_statistics'
-        params = [self.session_key, self.usr, self.pwd,
-                  sid, output]
-        params = [self.session_key,sid, output]
+        params = [self.session_key,sid, output, lang, graph]        
+        return self.call_rpc(method, params).json()
         
-        return self.call_rpc(method, params, True)
+    # -------------------------------------------------
+    
+    def get_timeline(self, sid, stype, start, end):
         
+        """
+            RPC Routine to export submission timeline.
+            Returns an array of values (count and period)
+     
+            @access public
+            @param string $sSessionKey Auth credentials
+            @param int $iSurveyID ID of the Survey
+            @param string $sType (day|hour)
+            @param string $dStart
+            @param string $dEnd
+            @return array On success: The timeline. On failure array with
+                error information
+           
+        """
+        method = 'export_timeline'
+        params = [self.session_key,sid, stype, start, end]        
+        return self.call_rpc(method, params).json()
         
         
         

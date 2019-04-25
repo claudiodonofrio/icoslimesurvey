@@ -2,3 +2,9 @@ requests
 base64
 pandas
 xlrd
+io
+os
+matplotlib
+jinja2
+datetime
+
