@@ -5,42 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">    
     
-    <link rel="stylesheet" href="../envriplus.css">
+    <link rel="stylesheet" href="./envriplus.css">
     
 </head>
     <body>
     <div class="container">
-    <hr>
-      <table id='header'>
+    <table>
         <tr>
-          <td>
-            <a href="https://www.envriplus.eu/" target="_blank"><img src="../envriplus_logo.png"></a>
-          </td>
-          <td id="header-details">
-            utc: {{gen_date}}              
-          </td>
+            <td id="header-logo">
+                <a href="https://www.envriplus.eu/" target="_blank">
+                <img src="./envriplus_logo.png"></a>
+            </td>
         </tr>
-      </table>
+        <tr>
+            <td>
+     	ENVRIplus is a Horizon 2020 project bringing together Environmental 
+		and Earth System Research Infrastructures, projects and networks together 
+		with technical specialist partners to create a more coherent, 
+		interdisciplinary and interoperable cluster of 
+		Environmental Research Infrastructures across Europe. 
+		<span><a style="color: #ad4d61;" href="http://www.envriplus.eu/introduction/">Read more!</a></span>
+
+            </td>
+            </tr>
+    </table>
+    </div>
+	
+    <div class="container">
+    <hr>
+    <h2>Survey Information</h2>
+    <table>      
+          {% for key, value in details.items() %}
+            <tr><td width="150">{{key}}:</td><td> {{value}}</td></tr>
+          {% endfor %}
+            <tr><td width="150">report generated (utc) :</td><td>{{gen_date}}</td></tr>
+     </table>
+      
     </div>
     
     <div class="container">
     <hr>
-    <h2>Survey Detail Information</h2>
-      <ul>     
-          {% for key, value in details.items() %}
-            <li>{{key}} : {{value}}</li>
-          {% endfor %}
-      </ul>
-    </div>
-    
-    <div class="container">
-        <hr>
     <h2>Timeline</h2>
-    <p>The following graph shows how many surveys where completed/submitted (yaxis) over time.</p>
-    <img src="{{timeline}}" class="img-responsive" alt="Timeline">    
+    <p>The following graph shows how many surveys where completed/submitted (y-axis) over time.</p>
+    <img src="./{{timeline}}" class="img-responsive" alt="Timeline">    
     </div>
     
 
+    <p class="pageprake"></p>
     
     <div class="container">
     <hr>

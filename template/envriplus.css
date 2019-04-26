@@ -2,16 +2,25 @@
 .container {
     max-width: 800px;
     padding-top: 10px;
+	page-break-inside: avoid;
     }
 .img-responsive{width:100%;}
 
 table#header {    
-    border: 0px solid black;
+    border: 0px;
     width: 100%; 
-    background-color: #f1f1c1;
+    background-color: #ffffff;
     }
-td#header-details {
+td#header-text {
     text-align:     right;
     vertical-align: bottom;
-    width:          400;
+    }
+td#header-logo {
+    vertical-align: top;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    }
+    
+.pagebreak {
+    page-break-after: always;
     }

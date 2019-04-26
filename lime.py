@@ -12,6 +12,8 @@ import io
 import os
 import matplotlib.pyplot as plt
 import report
+import shutil
+
 
 
 # ------------------------------------------------------------------
@@ -150,7 +152,7 @@ print(df)
 for t in timeline_list:
     fig, ax = plt.subplots()
     ax.grid()
-    ax.set(xlabel='date(day)', ylabel='counts',
+    ax.set(xlabel='date (day)', ylabel='n (count) ',
     title='Timeline for survey submissions')
 
     ts=[]
@@ -169,7 +171,7 @@ for t in timeline_list:
 
 
 # and finally we create a custom report
-# but this is only possible, if outputformat is HTML
+# but this is only possible, if output_format is HTML
 
 if output_format == 'html':
         
@@ -209,9 +211,14 @@ if output_format == 'html':
         else:        
             # create the report and safe to file
             r = report.report(templatename,detail, statistic, timeline)
-            
-            with open('./out/' + sid +'/' + report_name, 'w') as f:
+            folder = './out/' + sid +'/'            
+            with open(folder + report_name, 'w') as f:
                 f.write(r)
+                
+            # now we copy the logo and css file into the same directory
+            # such that the report is self contained
+            shutil.copyfile('./template/envriplus_logo.png', folder + 'envriplus_logo.png')
+            shutil.copyfile('./template/envriplus.css', folder + 'envriplus.css')
                 
         
         
