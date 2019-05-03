@@ -13,17 +13,23 @@ import os
 import matplotlib.pyplot as plt
 import report
 import shutil
-
+import auth as a
 
 
 # ------------------------------------------------------------------
 # set server and authentication
 # ------------------------------------------------------------------
+# redentials are stored  in a file
+# called authy.pass, which is not provided on github.
+# you need somehow to provide url, usr, pwd 
 
-url = 'http://localhost/limesurvey/index.php/admin/remotecontrol'
-usr = 'limey'
-pwd = 'EnvriPlus'
+url = 'http://path/to/the/limesurvey/remote/control'
+usr = 'username'
+pwd = 'password'
 
+url = a.local()[0]
+usr = a.local()[1]
+pwd = a.local()[2]
 
 # ------------------------------------------------------------------
 # create a new instance, 
@@ -57,7 +63,7 @@ for s in surveys['result']:
     
 output_format = 'html'
 lang = ''
-graph = '0'
+graph = '1'
 
 # empty container to hold all the statistics
 stats_list = []
@@ -192,7 +198,7 @@ if output_format == 'html':
             if s[0] == sid:
                 statistic = s[1]
                 
-                # prettyfy
+                # prettify
                 statistic = statistic.decode()            
         
         # find the corresponding timeline 

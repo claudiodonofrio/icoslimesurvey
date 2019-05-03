@@ -179,15 +179,29 @@ class IcosLimer:
         params = [self.session_key,sid, stype, start, end]        
         return self.call_rpc(method, params).json()
         
+    # -------------------------------------------------        
+
+    def export_responses(self, sid, stype='json'):
+        """
+        Export responses in base64 encoded string
+     
+        @access public
+        @param string $sSessionKey Auth credentials
+        @param int $iSurveyID ID of the Survey
+        @param string $sDocumentType any format available by plugins (for example : pdf, csv, xls, doc, json)
+        @param string $sLanguageCode (optional) The language to be used
+        @param string $sCompletionStatus (optional) 'complete','incomplete' or 'all' - defaults to 'all'
+        @param string $sHeadingType (optional) 'code','full' or 'abbreviated' Optional defaults to 'code'
+        @param string $sResponseType (optional)'short' or 'long' Optional defaults to 'short'
+        @param integer $iFromResponseID (optional)
+        @param integer $iToResponseID (optional)
+        @param array $aFields (optional) Selected fields
+        @return array|string On success: Requested file as base 64-encoded string. On failure array with error information
+        """
         
-        
-        
-        
-        
-        
-        
-        
-        
+        method = 'export_responses'
+        params = [self.session_key,sid, stype] 
+        return self.call_rpc(method, params).json()
         
         
         
